@@ -20,12 +20,12 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            docker pull yourusername/api-image:latest
+            docker pull great2005/api-image:latest
             docker stop api || true
             docker rm api || true
-            docker run -d -p 3000:3000 --name api yourusername/api-image:latest
+            docker run -d -p 3000:3000 --name api great2005/api-image:latest
 
-            docker pull yourusername/webapp-image:latest
+            docker pull great2005/webapp-image:latest
             docker stop webapp || true
             docker rm webapp || true
-            docker run -d -p 80:5000 --name webapp yourusername/webapp-image:latest
+            docker run -d -p 80:5000 --name webapp great2005/webapp-image:latest
