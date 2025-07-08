@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy Backend to EC2
 
 on:
   push:
@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # ✅ Cache Node.js modules
       - name: Cache Node.js modules
         uses: actions/cache@v4
         with:
@@ -20,22 +19,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # 🔨 Build & Push Docker image
-      - name: Build & Push Docker image
+      - name: Build & Push Backend Docker image
         run: |
-          docker build -t great2005/ecommerce-app .
+          cd api
+          docker build -t great2005/ecommerce-api .
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push great2005/ecommerce-app
+          docker push great2005/ecommerce-api
 
-      # 🚀 SSH into EC2 & Deploy
-      - name: SSH & Deploy
+      - name: SSH & Deploy on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull great2005/ecommerce-app
-            docker stop ecommerce-app || true
-            docker rm ecommerce-app || true
-            docker run -d -p 80:3000 --name ecommerce-app great2005/ecommerce-app
+            docker pull great2005/ecommerce-api
+            docker stop ecommerce-api || true
+            docker rm ecommerce-api || true
+            docker run -d -p 3000:3000 --name ecommerce-api great2005/ecommerce-api
