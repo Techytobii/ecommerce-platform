@@ -1,9 +1,9 @@
-name: íº€ Deploy to server
+name: ðŸš€ Deploy to server
 
 on:
   push:
     branches:
-      - main   # or whatever branch triggers deployment
+      - main
 
 jobs:
   deploy:
