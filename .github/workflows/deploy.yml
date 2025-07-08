@@ -19,13 +19,24 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
           script: |
+            echo "✅ Pulling latest API image..."
             docker pull great2005/api-image:latest
+
+            echo "🚫 Stopping and removing old API container if exists..."
             docker stop api || true
             docker rm api || true
-            docker run -d -p 3000:3000 --name api great2005/api-image:latest
 
+            echo "🚀 Running new API container..."
+            docker run -d --restart unless-stopped -p 3000:3000 --name api great2005/api-image:latest
+
+            echo "✅ Pulling latest Webapp image..."
             docker pull great2005/webapp-image:latest
+
+            echo "🚫 Stopping and removing old Webapp container if exists..."
             docker stop webapp || true
             docker rm webapp || true
-            docker run -d -p 80:5000 --name webapp great2005/webapp-image:latest
+
+            echo "🚀 Running new Webapp container..."
+            docker run -d --restart unless-stopped -p 80:5000 --name webapp great2005/webapp-image:latest
